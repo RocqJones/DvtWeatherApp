@@ -1,1 +1,1 @@
-# Waether Forecast App
+# Weather Forecast App
