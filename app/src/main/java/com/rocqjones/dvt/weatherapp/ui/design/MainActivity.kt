@@ -1,4 +1,4 @@
-package com.rocqjones.dvt.weatherapp
+package com.rocqjones.dvt.weatherapp.ui.design
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
