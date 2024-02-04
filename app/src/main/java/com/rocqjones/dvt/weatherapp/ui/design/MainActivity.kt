@@ -33,6 +33,7 @@ class MainActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         getCurrentWeather()
+        getWeatherForecast()
     }
 
     override fun activityContext(): Activity {

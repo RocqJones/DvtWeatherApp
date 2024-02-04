@@ -8,8 +8,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * enqueue - Asynchronously send the request and notify callback of its response or if an error
+ * occurred talking to the server, creating the request, or processing the response.
+ */
 class ApiRepository {
-    suspend fun fetchCurrentWeather(
+
+    fun fetchCurrentWeather(
         params: MutableMap<String, String>,
         callback: IExecute<CurrentWeatherResponseModel>
     ) {
@@ -33,7 +38,7 @@ class ApiRepository {
         }
     }
 
-    suspend fun fetchForecastWeather(
+    fun fetchForecastWeather(
         params: MutableMap<String, String>,
         callback: IExecute<ForecastWeatherResponseModel>
     ) {

@@ -9,12 +9,12 @@ import retrofit2.http.QueryMap
 
 interface WebService {
     @GET(Constants.weather_endpoint)
-    suspend fun fetchCurrentWeather(
+    fun fetchCurrentWeather(
         @QueryMap params: MutableMap<String, String>
     ): Call<CurrentWeatherResponseModel?>?
 
     @GET(Constants.forecast_endpoint)
-    suspend fun fetchForecastWeather(
+    fun fetchForecastWeather(
         @QueryMap params: MutableMap<String, String>
     ): Call<ForecastWeatherResponseModel?>?
 }

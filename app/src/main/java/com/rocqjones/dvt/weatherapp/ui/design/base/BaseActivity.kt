@@ -57,4 +57,21 @@ abstract class BaseActivity : ComponentActivity() {
             e.printStackTrace()
         }
     }
+
+    fun getWeatherForecast() {
+        try {
+            val params: MutableMap<String, String> = HashMap()
+            params["lat"] = "-1.2240624585163389"
+            params["lon"] = "36.919931302314055"
+            params["appid"] = Constants.APP_ID
+
+            apiViewModel.fetchForecastWeather(params).observe(this) {
+                if (it != null) {
+                    Log.d(tag, "forecastWeather: ${Gson().toJson(it)}")
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 }

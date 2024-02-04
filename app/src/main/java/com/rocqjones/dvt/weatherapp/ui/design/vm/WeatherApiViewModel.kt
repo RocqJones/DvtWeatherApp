@@ -13,6 +13,10 @@ import com.rocqjones.dvt.weatherapp.logic.network.repo.ApiRepository
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
+/**
+ * "viewModelScope.launch" - Launches a new coroutine without blocking the current thread and returns
+ *                           a reference to the coroutine as a Job.
+ */
 class WeatherApiViewModel(private val repository: ApiRepository) : ViewModel() {
 
     private val tag = "WeatherViewModel"
@@ -34,18 +38,16 @@ class WeatherApiViewModel(private val repository: ApiRepository) : ViewModel() {
                             when {
                                 result != null -> {
                                     if (result.isSuccessful) {
-                                        /*Log.e(tag, "currentWeather data:" + Gson().toJson(
+                                        Log.e(tag, "currentWeather data:" + Gson().toJson(
                                             result.body()
-                                        ))*/
+                                        ))
                                         fetchCurrentWeatherResponse.value = result.body()
-                                        // IResult.Success(result.body())
                                     }
                                 }
 
                                 else -> {
                                     if (t != null) {
                                         fetchCurrentWeatherResponse.value = null
-                                        // IResult.Error(t)
                                     }
                                 }
                             }
