@@ -14,7 +14,7 @@ object ApiInterface {
         ).build()
     }
 
-    // create instance of Weather API interface
+    // provides instance of Weather API interface
     val weatherApi: WebService by lazy {
         retrofit.create(WebService::class.java)
     }

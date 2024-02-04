@@ -83,14 +83,12 @@ class WeatherApiViewModel(private val repository: ApiRepository) : ViewModel() {
                                             result.body()
                                         ))
                                         fetchForecastWeatherResponse.value = result.body()
-                                        // IResult.Success(result.body())
                                     }
                                 }
 
                                 else -> {
                                     if (t != null) {
                                         fetchForecastWeatherResponse.value = null
-                                        // IResult.Error(t)
                                     }
                                 }
                             }
