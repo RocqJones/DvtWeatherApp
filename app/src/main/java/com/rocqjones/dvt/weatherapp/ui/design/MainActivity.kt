@@ -1,7 +1,7 @@
-package com.rocqjones.dvt.weatherapp
+package com.rocqjones.dvt.weatherapp.ui.design
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -10,11 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.rocqjones.dvt.weatherapp.ui.design.base.BaseActivity
 import com.rocqjones.dvt.weatherapp.ui.theme.DvtWeatherAppTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             DvtWeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -26,6 +28,15 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getCurrentWeather()
+    }
+
+    override fun activityContext(): Activity {
+        return this
     }
 }
 
