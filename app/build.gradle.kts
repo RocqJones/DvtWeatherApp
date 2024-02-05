@@ -56,14 +56,13 @@ android {
 }
 
 dependencies {
-    // variables
     val retrofitVersion = "2.9.0"
     val materialVersion = "1.11.0"
     val material3Version = "1.1.2"
     val coroutinesCore = "1.7.3"
     val coroutinesAndroid = "1.7.1"
     val lifecycleVersion = "2.7.0"
-    val roomVersion = "2.6.1"
+    val roomVersion = "2.5.0"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.2")
