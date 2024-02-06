@@ -10,8 +10,8 @@ import com.google.gson.Gson
 import com.rocqjones.dvt.weatherapp.configs.Constants
 import com.rocqjones.dvt.weatherapp.logic.network.repo.ApiRepository
 import com.rocqjones.dvt.weatherapp.logic.utils.LocationUtil
-import com.rocqjones.dvt.weatherapp.ui.design.vm.WeatherApiViewModel
-import com.rocqjones.dvt.weatherapp.ui.design.vm.WeatherApiViewModelFactory
+import com.rocqjones.dvt.weatherapp.logic.vm.WeatherApiViewModel
+import com.rocqjones.dvt.weatherapp.logic.vm.WeatherApiViewModelFactory
 
 abstract class BaseActivity : ComponentActivity() {
 

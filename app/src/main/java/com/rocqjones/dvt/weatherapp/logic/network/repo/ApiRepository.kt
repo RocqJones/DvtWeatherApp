@@ -9,7 +9,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 /**
- * enqueue - Asynchronously send the request and notify callback of its response or if an error
+ * enqueue - Asynchronously send the request and notify callback of its response or if an error occurred
  */
 class ApiRepository {
 

@@ -1,4 +1,4 @@
-package com.rocqjones.dvt.weatherapp.ui.design.vm
+package com.rocqjones.dvt.weatherapp.logic.vm
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
