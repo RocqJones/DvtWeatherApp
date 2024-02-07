@@ -1,7 +1,6 @@
 package com.rocqjones.dvt.weatherapp.ui.design
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
