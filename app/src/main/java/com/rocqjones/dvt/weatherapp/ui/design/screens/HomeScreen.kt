@@ -3,6 +3,7 @@ package com.rocqjones.dvt.weatherapp.ui.design.screens
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -62,6 +63,12 @@ fun HomeScreen() {
     val dataCurrent by viewModelCurrent.getAllCurrentWeather.observeAsState(initial = emptyList())
     val dataForecast by viewModelForecast.getAllForecastWeather.observeAsState(initial = emptyList())
 
+    var bgColor: Color by remember { mutableStateOf(sunnyBg) }
+    if (dataCurrent.toMutableList().isNotEmpty()) {
+        val it = dataCurrent[0]
+        bgColor = DataFormatUtil.getBgColor(it.weatherMain)
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -71,11 +78,12 @@ fun HomeScreen() {
         )
         CurrentTempContentView(
             dataCurrent,
+            bgColor,
             modifier = Modifier.weight(0.2f)
         )
         ForecastContentView(
             dataForecast,
-            dataCurrent,
+            bgColor,
             modifier = Modifier.weight(1f)
         )
     }
@@ -90,19 +98,21 @@ fun CurrentContentView(
         val it = data[0]
         Log.d("loadCurrentObj", "$it")
         // Bg Drawable
-        val bgDrawable : Int by remember {
+        val bgDrawable: Int by remember {
             mutableStateOf(DataFormatUtil.getBgDrawable(it.weatherMain))
         }
 
         Box(
-            modifier = modifier
-                .fillMaxSize()
-                .paint(
-                    painterResource(id = bgDrawable),
-                    contentScale = ContentScale.FillBounds
-                ),
+            modifier = modifier.fillMaxSize().paint(
+                painterResource(id = bgDrawable),
+                contentScale = ContentScale.FillBounds
+            ),
             contentAlignment = Alignment.Center
         ) {
+            // Toolbar at the top, fill width
+            Toolbar(
+                modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter)
+            )
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -133,16 +143,43 @@ fun CurrentContentView(
 }
 
 @Composable
+fun Toolbar(modifier: Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween // Spread images to ends
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.baseline_add_location_alt_24),
+                contentDescription = stringResource(R.string.icon),
+                contentScale = ContentScale.None,
+                modifier = Modifier
+                    .padding(26.dp)
+                    .clickable { /* Call screen 1 */ }
+            )
+
+            Image(
+                painter = painterResource(id = R.drawable.baseline_bookmarks_24),
+                contentDescription = stringResource(R.string.icon),
+                contentScale = ContentScale.None,
+                modifier = Modifier
+                    .padding(26.dp)
+                    .clickable { /* Call screen 2 */ }
+            )
+        }
+    }
+}
+
+
+@Composable
 fun CurrentTempContentView(
     dataCurrent: List<CurrentWeatherModel>,
+    bgColor: Color,
     modifier: Modifier
 ) {
     if (dataCurrent.toMutableList().isNotEmpty()) {
         val it = dataCurrent[0]
         Log.d("loadCurrentObj", "$it")
-
-        // Bg color
-        val bgColor : Color by remember { mutableStateOf(DataFormatUtil.getBgColor(it.weatherMain)) }
 
         Column(
             modifier = modifier.background(bgColor)
@@ -222,16 +259,9 @@ fun CurrentTempContentView(
 @Composable
 fun ForecastContentView(
     dataForecastList: List<ForecastWeatherModel>,
-    dataCurrent: List<CurrentWeatherModel>,
+    bgColor: Color,
     modifier: Modifier
 ) {
-
-    // Bg color
-    var bgColor : Color by remember { mutableStateOf(sunnyBg) }
-    if (dataCurrent.toMutableList().isNotEmpty()) {
-        val it = dataCurrent[0]
-        bgColor = DataFormatUtil.getBgColor(it.weatherMain)
-    }
 
     if (dataForecastList.toMutableList().isNotEmpty()) {
         Log.d("loadForecastObj", "$dataForecastList")
@@ -240,7 +270,7 @@ fun ForecastContentView(
         ) {
             items(dataForecastList) { item ->
                 // setIcon
-                val bgIcon : Int by remember {
+                val bgIcon: Int by remember {
                     mutableStateOf(DataFormatUtil.getBgIcon(item.weatherMain))
                 }
 
@@ -268,7 +298,9 @@ private fun ListRowView(
             text = dayString,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp),
             textAlign = TextAlign.Start
         )
 
@@ -277,6 +309,7 @@ private fun ListRowView(
             painter = painterResource(id = icon),
             contentDescription = stringResource(R.string.icon),
             contentScale = ContentScale.None,
+            modifier = Modifier.weight(1f),
             alignment = Alignment.Center,
         )
 
