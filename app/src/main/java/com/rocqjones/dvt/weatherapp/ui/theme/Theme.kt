@@ -61,8 +61,8 @@ fun DvtWeatherAppTheme(
             window.navigationBarColor = colorScheme.primary.toArgb()
 
             // light mode : Let's make StatusBar items & Nav controllers visible
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
         }
     }
 

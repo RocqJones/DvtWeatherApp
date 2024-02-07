@@ -1,15 +1,20 @@
 package com.rocqjones.dvt.weatherapp.ui.design.screens
 
 import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +23,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -25,9 +31,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.rocqjones.dvt.weatherapp.R
 import com.rocqjones.dvt.weatherapp.configs.BaseAppConfig
 import com.rocqjones.dvt.weatherapp.logic.models.entities.CurrentWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.ForecastWeatherModel
@@ -36,6 +44,7 @@ import com.rocqjones.dvt.weatherapp.logic.vm.CurrentViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ForecastViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelCurrent
 import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelForecast
+import com.rocqjones.dvt.weatherapp.ui.theme.sunnyBg
 
 @Composable
 fun HomeScreen() {
@@ -58,9 +67,19 @@ fun HomeScreen() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        CurrentContentView(dataCurrent, modifier = Modifier.weight(1f))
-        CurrentTempContentView(dataCurrent, modifier = Modifier.weight(1f))
-        ForecastContentView(dataForecast, modifier = Modifier.weight(1f))
+        CurrentContentView(
+            dataCurrent,
+            modifier = Modifier.weight(1f)
+        )
+        CurrentTempContentView(
+            dataCurrent,
+            modifier = Modifier.weight(0.2f)
+        )
+        ForecastContentView(
+            dataForecast,
+            dataCurrent,
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -78,10 +97,12 @@ fun CurrentContentView(
         }
 
         Box(
-            modifier = modifier.fillMaxSize().paint(
-                painterResource(id = bgDrawable),
-                contentScale = ContentScale.FillBounds
-            ),
+            modifier = modifier
+                .fillMaxSize()
+                .paint(
+                    painterResource(id = bgDrawable),
+                    contentScale = ContentScale.FillBounds
+                ),
             contentAlignment = Alignment.Center
         ) {
 
@@ -92,7 +113,7 @@ fun CurrentContentView(
                 val description = (it.weatherMain ?: "").uppercase()
 
                 Text(
-                    text = "Nairobi Ke",
+                    text = it.locationName ?: "",
                     style = MaterialTheme.typography.headlineSmall,
                     color = Color.White,
                 )
@@ -202,7 +223,74 @@ fun CurrentTempContentView(
 
 @Composable
 fun ForecastContentView(
-    dataForecast: List<ForecastWeatherModel>,
+    dataForecastList: List<ForecastWeatherModel>,
+    dataCurrent: List<CurrentWeatherModel>,
     modifier: Modifier
 ) {
+
+    // Bg color
+    var bgColor : Color by remember { mutableStateOf(sunnyBg) }
+    if (dataCurrent.toMutableList().isNotEmpty()) {
+        val it = dataCurrent[0]
+        bgColor = DataFormatUtil.getBgColor(it.weatherMain)
+    }
+
+    if (dataForecastList.toMutableList().isNotEmpty()) {
+        Log.d("loadForecastObj", "$dataForecastList")
+        LazyColumn(
+            modifier = modifier.background(bgColor),
+        ) {
+            items(dataForecastList) { item ->
+                // setIcon
+                val bgIcon : Int by remember {
+                    mutableStateOf(DataFormatUtil.getBgIcon(item.weatherMain))
+                }
+
+                ListRowView(
+                    dayString = DataFormatUtil.dateTimeConverter(item.forecastDate.toString()),
+                    icon = bgIcon,
+                    tempString = "${DataFormatUtil.convertKelvinToCelsius(item.temperature ?: 0.0)} ℃",
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ListRowView(
+    dayString: String,
+    icon: Int,
+    tempString: String,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = dayString,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Start
+        )
+
+        // icon
+        Image(
+            painter = painterResource(id = icon),
+            contentDescription = stringResource(R.string.icon),
+            contentScale = ContentScale.Inside,
+            alignment = Alignment.Center,
+            modifier = Modifier.width(20.dp)
+        )
+
+        Text(
+            text = tempString,
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White,
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center
+        )
+    }
+
+    Spacer(modifier = Modifier.padding(4.dp))
 }
