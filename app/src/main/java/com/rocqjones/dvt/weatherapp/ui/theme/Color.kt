@@ -2,10 +2,14 @@ package com.rocqjones.dvt.weatherapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryColor = Color(0xFF54717A)
-val secondaryColor = Color(0xFF625b71)
-val Pink80 = Color(0xFFEFB8C8)
-val Pink40 = Color(0xFF7D5260)
+val lightBg = Color(0xFFFEFEFF)
+val lightTextColor = Color(0xFF000000)
+
+val darkBg = Color(0xFF414141)
+val darkTextColor = Color(0xFFFFFFFF)
+
+val secondaryColor = Color(0xFFEFB8C8)
+val tertiaryColor = Color(0xFFEFB8C8)
 
 val rainyBg = Color(0xFF57575D)
 val sunnyBg = Color(0xFF47AB2F)

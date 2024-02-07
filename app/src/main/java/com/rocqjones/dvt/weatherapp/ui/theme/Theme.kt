@@ -16,25 +16,27 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = primaryColor,
+    primary = darkBg,
+    onPrimary = darkTextColor,
     secondary = secondaryColor,
-    tertiary = Pink80
+    onSecondary = darkTextColor,
+    tertiary = tertiaryColor,
+    surface = darkBg,
+    onSurface = darkTextColor,
+    background = darkBg,
+    onBackground = darkTextColor
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = primaryColor,
+    primary = lightBg,
+    onPrimary = lightTextColor,
     secondary = secondaryColor,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onSecondary = lightTextColor,
+    tertiary = tertiaryColor,
+    surface = lightBg,
+    onSurface = lightTextColor,
+    background = lightBg,
+    onBackground = lightTextColor
 )
 
 @Composable
@@ -57,12 +59,12 @@ fun DvtWeatherAppTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            window.navigationBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
+            window.navigationBarColor = colorScheme.background.toArgb()
 
             // light mode : Let's make StatusBar items & Nav controllers visible
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = !darkTheme
         }
     }
 
