@@ -104,15 +104,19 @@ fun CurrentContentView(
         }
 
         Box(
-            modifier = modifier.fillMaxSize().paint(
-                painterResource(id = bgDrawable),
-                contentScale = ContentScale.FillBounds
-            ),
+            modifier = modifier
+                .fillMaxSize()
+                .paint(
+                    painterResource(id = bgDrawable),
+                    contentScale = ContentScale.FillBounds
+                ),
             contentAlignment = Alignment.Center
         ) {
             // Toolbar at the top, fill width
             Toolbar(
-                modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
             )
 
             Column(

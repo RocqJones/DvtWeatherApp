@@ -1,19 +1,26 @@
 package com.rocqjones.dvt.weatherapp.ui.design.base
 
+import android.Manifest
 import android.app.Activity
-import android.os.Bundle
-import android.os.PersistableBundle
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.gson.Gson
 import com.rocqjones.dvt.weatherapp.configs.BaseAppConfig
 import com.rocqjones.dvt.weatherapp.configs.Constants
+import com.rocqjones.dvt.weatherapp.logic.listeners.LocationModelListener
+import com.rocqjones.dvt.weatherapp.logic.models.LocationModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.CurrentWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.ForecastWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.response.CurrentWeatherResponseModel
 import com.rocqjones.dvt.weatherapp.logic.models.response.ForecastWeatherResponseModel
 import com.rocqjones.dvt.weatherapp.logic.network.repo.ApiRepository
+import com.rocqjones.dvt.weatherapp.logic.utils.HelperUtil
 import com.rocqjones.dvt.weatherapp.logic.utils.LocationUtil
 import com.rocqjones.dvt.weatherapp.logic.vm.CurrentViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.FavouriteViewModelFactory
@@ -23,6 +30,7 @@ import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelFavourite
 import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelForecast
 import com.rocqjones.dvt.weatherapp.logic.vm.WeatherApiViewModel
 import com.rocqjones.dvt.weatherapp.logic.vm.WeatherApiViewModelFactory
+import kotlin.system.exitProcess
 
 abstract class BaseActivity : ComponentActivity() {
 
@@ -50,16 +58,19 @@ abstract class BaseActivity : ComponentActivity() {
         FavouriteViewModelFactory((this.applicationContext as BaseAppConfig).favouriteRepository)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    private val locationRequestCode = 99
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
+    override fun onStart() {
+        super.onStart()
+        // initialize fused client
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         initializeVariables()
     }
 
     private fun initializeVariables() {
         try {
             activityContext = activityContext()
-            locationUtil = LocationUtil(activityContext)
         } catch (e: Exception) {
             Log.e(tag, "initializeVariables", e)
         }
@@ -67,11 +78,59 @@ abstract class BaseActivity : ComponentActivity() {
 
     protected abstract fun activityContext(): Activity
 
-    fun getCurrentWeather() {
+    override fun onResume() {
+        super.onResume()
+        checkNetwork()
+        checkLocationPermissionStatus()
+    }
+
+    private fun checkNetwork() {
+        try {
+            when {
+                HelperUtil.isConnectedToInternet(this) -> {
+                    // Location logic
+                    locationUtil = LocationUtil(
+                        activityContext,
+                        object : LocationModelListener {
+                            override fun onResponse(
+                                model: LocationModel?
+                            ) {
+                                Log.e(tag, "locationResponse lat: ${model?.latitude}, long: ${model?.longitude}")
+                                when {
+                                    model != null -> {
+                                        getCurrentWeather(
+                                            latitude = model.latitude ?: Constants.defaultLat,
+                                            longitude = model.longitude ?: Constants.defaultLong
+                                        )
+                                        getWeatherForecast(
+                                            latitude = model.latitude ?: Constants.defaultLat,
+                                            longitude = model.longitude ?: Constants.defaultLong
+                                        )
+                                    }
+
+                                    else -> {
+                                        checkLocationPermissionStatus()
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+
+                else -> {
+                    // No internet
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "checkNetwork Error: ", e)
+        }
+    }
+
+    fun getCurrentWeather(latitude: Double, longitude: Double) {
         try {
             val params: MutableMap<String, String> = HashMap()
-            params["lat"] = "-1.2240624585163389"
-            params["lon"] = "36.919931302314055"
+            params["lat"] = latitude.toString()
+            params["lon"] = longitude.toString()
             params["appid"] = Constants.APP_ID
 
             apiViewModel.fetchCurrentWeather(params).observe(this) {
@@ -82,7 +141,7 @@ abstract class BaseActivity : ComponentActivity() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(tag, "getCurrentWeather", e)
         }
     }
 
@@ -103,7 +162,7 @@ abstract class BaseActivity : ComponentActivity() {
                 )
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(tag, "insertCurrentToRoom", e)
         }
     }
 
@@ -120,16 +179,16 @@ abstract class BaseActivity : ComponentActivity() {
             }
             m
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(tag, "loadCurrentFromRoom", e)
             listOf()
         }
     }
 
-    fun getWeatherForecast() {
+    fun getWeatherForecast(latitude: Double, longitude: Double) {
         try {
             val params: MutableMap<String, String> = HashMap()
-            params["lat"] = "-1.2240624585163389"
-            params["lon"] = "36.919931302314055"
+            params["lat"] = latitude.toString()
+            params["lon"] = longitude.toString()
             params["appid"] = Constants.APP_ID
 
             apiViewModel.fetchForecastWeather(params).observe(this) {
@@ -140,7 +199,7 @@ abstract class BaseActivity : ComponentActivity() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(tag, "getWeatherForecast", e)
         }
     }
 
@@ -162,7 +221,93 @@ abstract class BaseActivity : ComponentActivity() {
                 )
             }?.forEach { viewModelForecast.insert(it) }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(tag, "insertForecastToRoom", e)
+        }
+    }
+
+    fun checkLocationPermissionStatus() {
+        try {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED -> {
+                    when {
+                        ActivityCompat.shouldShowRequestPermissionRationale(
+                            this, Manifest.permission.ACCESS_FINE_LOCATION
+                        ) && ActivityCompat.shouldShowRequestPermissionRationale(
+                            this, Manifest.permission.ACCESS_COARSE_LOCATION
+                        ) -> {
+                            // Show an explanation to the user *asynchronously* -- don't block
+                            // this thread waiting for the user's response! After the user
+                            ActivityCompat.requestPermissions(
+                                this,
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                ),
+                                locationRequestCode
+                            )
+                        }
+
+                        else -> {
+                            // We can request the permission.
+                            ActivityCompat.requestPermissions(
+                                this, arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                ),
+                                locationRequestCode
+                            )
+                        }
+                    }
+                }
+                else -> {
+                    // Permission previously granted
+                    getCurrentKnownLocation()
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(tag, "checkLocationPermissionStatus", e)
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            locationRequestCode -> if (grantResults.isNotEmpty()
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                // permission was granted, do location-related task you need to do.
+                when (PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) -> {
+                        getCurrentKnownLocation()
+                    }
+                }
+            }
+
+            else {
+                // permission denied! Disable the functionality that depends on this permission.
+                exitProcess(0)
+            }
+        }
+    }
+
+    private fun getCurrentKnownLocation() {
+        try {
+            locationUtil.getCurrentKnownLocation(
+                fusedLocationProviderClient
+            )
+        } catch (e: Exception) {
+            Log.e(tag, "getCurrentKnownLocation", e)
         }
     }
 }

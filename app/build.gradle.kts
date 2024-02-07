@@ -105,4 +105,7 @@ dependencies {
     // Room
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
+    // Location
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 }

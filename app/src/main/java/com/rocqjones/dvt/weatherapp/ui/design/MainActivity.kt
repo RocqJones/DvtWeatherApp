@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.rocqjones.dvt.weatherapp.logic.utils.HelperUtil
 import com.rocqjones.dvt.weatherapp.ui.design.base.BaseActivity
 import com.rocqjones.dvt.weatherapp.ui.design.screens.HomeScreen
 import com.rocqjones.dvt.weatherapp.ui.theme.DvtWeatherAppTheme
@@ -33,8 +34,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        getCurrentWeather()
-        getWeatherForecast()
+        //checkLocationPermissionStatus()
     }
 
     override fun activityContext(): Activity {

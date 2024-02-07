@@ -28,7 +28,7 @@ object DataFormatUtil {
             val date = inputFormat.parse(dateTimeStr)
             outputFormat.format(date!!)
         } catch (e: Exception) {
-            Log.e(tag, "convertKelvinToCelsius Error: ", e)
+            Log.e(tag, "dateTimeConverter Error: ", e)
             dateTimeStr
         }
     }
