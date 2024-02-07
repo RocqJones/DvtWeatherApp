@@ -54,24 +54,22 @@ fun CurrentContentView() {
             Log.d("loadCurrentObj", "$it")
 
             Column(
-                //modifier = Modifier.align(alignment = Alignment.Center)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 val tempC = "${DataFormatUtil.convertKelvinToCelsius(it.temperature ?: 0.0)}℃"
                 val description = it.weatherMain ?: ""
-
                 Text(
                     text = tempC,
                     style = MaterialTheme.typography.headlineLarge,
                     color = Color.White,
                 )
 
-                //Spacer(modifier = Modifier.padding(2.dp))
-
                 Text(
                     text = description,
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
                 )
+
             }
         }
     }
