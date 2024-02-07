@@ -39,6 +39,7 @@ import com.rocqjones.dvt.weatherapp.configs.BaseAppConfig
 import com.rocqjones.dvt.weatherapp.logic.models.entities.CurrentWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.ForecastWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.utils.DataFormatUtil
+import com.rocqjones.dvt.weatherapp.logic.utils.HelperUtil
 import com.rocqjones.dvt.weatherapp.logic.vm.CurrentViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ForecastViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelCurrent
@@ -66,7 +67,7 @@ fun HomeScreen() {
     var bgColor: Color by remember { mutableStateOf(sunnyBg) }
     if (dataCurrent.toMutableList().isNotEmpty()) {
         val it = dataCurrent[0]
-        bgColor = DataFormatUtil.getBgColor(it.weatherMain)
+        bgColor = HelperUtil.getBgColor(it.weatherMain)
     }
 
     Column(
@@ -99,7 +100,7 @@ fun CurrentContentView(
         Log.d("loadCurrentObj", "$it")
         // Bg Drawable
         val bgDrawable: Int by remember {
-            mutableStateOf(DataFormatUtil.getBgDrawable(it.weatherMain))
+            mutableStateOf(HelperUtil.getBgDrawable(it.weatherMain))
         }
 
         Box(
@@ -271,7 +272,7 @@ fun ForecastContentView(
             items(dataForecastList) { item ->
                 // setIcon
                 val bgIcon: Int by remember {
-                    mutableStateOf(DataFormatUtil.getBgIcon(item.weatherMain))
+                    mutableStateOf(HelperUtil.getBgIcon(item.weatherMain))
                 }
 
                 ListRowView(
