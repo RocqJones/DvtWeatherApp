@@ -22,6 +22,15 @@ class FavouriteRepository(private val favouriteDao: FavouriteDao) {
     }
 
     @WorkerThread
+    suspend fun update(favouriteWeatherModel: FavouriteWeatherModel) {
+        try {
+            favouriteDao.update(favouriteWeatherModel)
+        } catch (e: Exception) {
+            Log.e(tag, "insert Error: ", e)
+        }
+    }
+
+    @WorkerThread
     suspend fun deleteFavouriteItem(id: Int) {
         try {
             favouriteDao.deleteFavouriteItem(id)

@@ -34,10 +34,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.rocqjones.dvt.weatherapp.R
 import com.rocqjones.dvt.weatherapp.configs.BaseAppConfig
 import com.rocqjones.dvt.weatherapp.logic.models.entities.CurrentWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.ForecastWeatherModel
+import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
 import com.rocqjones.dvt.weatherapp.logic.utils.DataFormatUtil
 import com.rocqjones.dvt.weatherapp.logic.utils.HelperUtil
 import com.rocqjones.dvt.weatherapp.logic.vm.CurrentViewModelFactory
@@ -47,7 +49,7 @@ import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelForecast
 import com.rocqjones.dvt.weatherapp.ui.theme.sunnyBg
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     val viewModelCurrent: ViewModelCurrent = viewModel(
         factory = CurrentViewModelFactory(
             (LocalContext.current.applicationContext as BaseAppConfig).currentRepository
@@ -75,7 +77,8 @@ fun HomeScreen() {
     ) {
         CurrentContentView(
             dataCurrent,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            navController
         )
         CurrentTempContentView(
             dataCurrent,
@@ -93,7 +96,8 @@ fun HomeScreen() {
 @Composable
 fun CurrentContentView(
     data: List<CurrentWeatherModel>,
-    modifier: Modifier
+    modifier: Modifier,
+    navController: NavHostController
 ) {
     if (data.toMutableList().isNotEmpty()) {
         val it = data[0]
@@ -114,6 +118,7 @@ fun CurrentContentView(
         ) {
             // Toolbar at the top, fill width
             Toolbar(
+                navController,
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.TopCenter)
@@ -148,7 +153,7 @@ fun CurrentContentView(
 }
 
 @Composable
-fun Toolbar(modifier: Modifier) {
+fun Toolbar(navController: NavHostController, modifier: Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -158,23 +163,22 @@ fun Toolbar(modifier: Modifier) {
                 painter = painterResource(id = R.drawable.baseline_add_location_alt_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier
-                    .padding(26.dp)
-                    .clickable { /* Call screen 1 */ }
+                modifier = Modifier.padding(26.dp).clickable { /* Go to search places */
+                    navController.navigate(Screen.SearchPlacesScreen.route)
+                }
             )
 
             Image(
                 painter = painterResource(id = R.drawable.baseline_bookmarks_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier
-                    .padding(26.dp)
-                    .clickable { /* Call screen 2 */ }
+                modifier = Modifier.padding(26.dp).clickable { /* Go to favourites */
+                    navController.navigate(Screen.SearchPlacesScreen.route)
+                }
             )
         }
     }
 }
-
 
 @Composable
 fun CurrentTempContentView(

@@ -35,7 +35,7 @@ data class ForecastWeatherModel(
 @Entity(tableName = "t_favourite")
 data class FavouriteWeatherModel(
     @PrimaryKey(autoGenerate = true) val id: Int?,
-    @ColumnInfo(name = "forecastId") val forecastId: Int? = null,
+    @ColumnInfo(name = "forecastId") val forecastId: String? = null,
     @ColumnInfo(name = "locationName") val locationName: String? = null,
     @ColumnInfo(name = "latitude") val latitude: Double? = null,
     @ColumnInfo(name = "longitude") val longitude: Double? = null,
@@ -44,5 +44,4 @@ data class FavouriteWeatherModel(
     @ColumnInfo(name = "temp_max") val temp_max: Double? = null,
     @ColumnInfo(name = "weatherMain") val weatherMain: String? = null,
     @ColumnInfo(name = "weatherDescription") val weatherDescription: String? = null,
-    @ColumnInfo(name = "forecastDate") val forecastDate: String? = null,
 )

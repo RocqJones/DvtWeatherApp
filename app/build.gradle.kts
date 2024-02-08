@@ -63,6 +63,7 @@ dependencies {
     val coroutinesAndroid = "1.7.1"
     val lifecycleVersion = "2.7.0"
     val roomVersion = "2.5.0"
+    val navigationVersion = "2.7.7"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -108,4 +109,10 @@ dependencies {
 
     // Location
     implementation("com.google.android.gms:play-services-location:21.1.0")
+
+    // Google Places SDK
+    implementation("com.google.android.libraries.places:places:3.3.0")
+
+    // Compose navigation
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
 }

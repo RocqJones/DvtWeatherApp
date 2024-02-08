@@ -27,6 +27,16 @@ class ViewModelFavourite(private val repository: FavouriteRepository) : ViewMode
         }
     }
 
+    fun update(
+        favouriteWeatherModel: FavouriteWeatherModel
+    ) = viewModelScope.launch {
+        try {
+            repository.update(favouriteWeatherModel)
+        } catch (e: Exception) {
+            Log.e(tag, "insert Error: ", e)
+        }
+    }
+
     fun deleteFavouriteItem(
         id: Int
     ) = viewModelScope.launch {
