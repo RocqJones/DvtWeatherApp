@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
 import com.rocqjones.dvt.weatherapp.ui.design.base.BaseActivity
+import com.rocqjones.dvt.weatherapp.ui.design.screens.FavouritePlacesScreen
 import com.rocqjones.dvt.weatherapp.ui.design.screens.HomeScreen
 import com.rocqjones.dvt.weatherapp.ui.design.screens.SearchPlacesScreen
 import com.rocqjones.dvt.weatherapp.ui.theme.DvtWeatherAppTheme
@@ -53,6 +54,9 @@ fun MyAppMain() {
         }
         composable(Screen.SearchPlacesScreen.route) {
             SearchPlacesScreen(navController)
+        }
+        composable(Screen.FavouritePlacesScreen.route) {
+            FavouritePlacesScreen(navController)
         }
     }
 }

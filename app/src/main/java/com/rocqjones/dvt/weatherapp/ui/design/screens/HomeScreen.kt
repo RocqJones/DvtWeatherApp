@@ -67,9 +67,11 @@ fun HomeScreen(navController: NavHostController) {
     val dataForecast by viewModelForecast.getAllForecastWeather.observeAsState(initial = emptyList())
 
     var bgColor: Color by remember { mutableStateOf(sunnyBg) }
+    var bgDrawable: Int by remember { mutableStateOf(R.drawable.forest_sunny) }
     if (dataCurrent.toMutableList().isNotEmpty()) {
         val it = dataCurrent[0]
         bgColor = HelperUtil.getBgColor(it.weatherMain)
+        bgDrawable = HelperUtil.getBgDrawable(it.weatherMain)
     }
 
     Column(
@@ -77,8 +79,9 @@ fun HomeScreen(navController: NavHostController) {
     ) {
         CurrentContentView(
             dataCurrent,
-            modifier = Modifier.weight(1f),
-            navController
+            bgDrawable,
+            navController,
+            modifier = Modifier.weight(1f)
         )
         CurrentTempContentView(
             dataCurrent,
@@ -96,16 +99,13 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun CurrentContentView(
     data: List<CurrentWeatherModel>,
-    modifier: Modifier,
-    navController: NavHostController
+    bgDrawable: Int,
+    navController: NavHostController,
+    modifier: Modifier
 ) {
     if (data.toMutableList().isNotEmpty()) {
         val it = data[0]
         Log.d("loadCurrentObj", "$it")
-        // Bg Drawable
-        val bgDrawable: Int by remember {
-            mutableStateOf(HelperUtil.getBgDrawable(it.weatherMain))
-        }
 
         Box(
             modifier = modifier

@@ -166,24 +166,6 @@ abstract class BaseActivity : ComponentActivity() {
         }
     }
 
-    fun loadCurrentFromRoom(): List<CurrentWeatherModel>? {
-        var m : List<CurrentWeatherModel> = listOf()
-        return try {
-            viewModelCurrent.getAllCurrentWeather.observe(this) { current ->
-                current.let {
-                    Log.d("loadCurrentFromRoom", "$it")
-                    if (it != null) {
-                        m = it
-                    }
-                }
-            }
-            m
-        } catch (e: Exception) {
-            Log.e(tag, "loadCurrentFromRoom", e)
-            listOf()
-        }
-    }
-
     fun getWeatherForecast(latitude: Double, longitude: Double) {
         try {
             val params: MutableMap<String, String> = HashMap()
