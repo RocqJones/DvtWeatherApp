@@ -29,7 +29,7 @@ class LocationUtil(
                 when {
                     location != null -> {
                         // Logic to handle location object
-                        Log.d("getCurrentLocation", "${location.latitude}, ${location.longitude}")
+                        Log.d(tag, "getCurrentLocation latLog: ${location.latitude}, ${location.longitude}")
                         Handler(Looper.getMainLooper()).post {
                             listener?.onResponse(
                                 LocationModel(
@@ -41,12 +41,12 @@ class LocationUtil(
                     }
 
                     else -> {
-                        Log.d("getCurrentLocation", "Returned Null")
+                        Log.d(tag, "getCurrentLocation: Returned Null")
                         Handler(Looper.getMainLooper()).post { listener?.onResponse(null) }
                     }
                 }
             }.addOnFailureListener { exception ->
-                Log.d("getCurrentLocation", "location failed with exception: $exception")
+                Log.e(tag, "getCurrentLocation Exception: ", exception)
                 // is location - GPS services enabled
                 Handler(Looper.getMainLooper()).post { listener?.onResponse(null) }
             }

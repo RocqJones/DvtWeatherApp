@@ -7,4 +7,5 @@ package com.rocqjones.dvt.weatherapp.logic.models.sealed
 sealed class Screen(val route: String) {
     object HomeScreen : Screen("homeScreen")
     object SearchPlacesScreen : Screen("searchPlacesScreen")
+    object FavouritePlacesScreen : Screen("favouritePlacesScreen")
 }

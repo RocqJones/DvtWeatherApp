@@ -2,4 +2,7 @@
     <string name="app_name">Weather Forecast</string>
     <string name="icon">Icon</string>
     <string name="api_key">AIzaSyDTwfJGnRMZwt-nF2kR111Is8Pf2huCaw4</string>
+    <string name="you_re_currently_in_offline_mode">You\'re currently in offline mode!</string>
+    <string name="to_you_this_feature_connect_to_internet">You\'re currently offline, to use this feature connect to the internet!</string>
+    <string name="you_don_t_have_saved_locations">You don\'t have saved locations!</string>
 </resources>

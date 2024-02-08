@@ -1,6 +1,7 @@
 package com.rocqjones.dvt.weatherapp.ui.design.screens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -50,15 +51,17 @@ import com.rocqjones.dvt.weatherapp.ui.theme.sunnyBg
 
 @Composable
 fun HomeScreen(navController: NavHostController) {
+    val context = LocalContext.current
+
     val viewModelCurrent: ViewModelCurrent = viewModel(
         factory = CurrentViewModelFactory(
-            (LocalContext.current.applicationContext as BaseAppConfig).currentRepository
+            (context.applicationContext as BaseAppConfig).currentRepository
         )
     )
 
     val viewModelForecast: ViewModelForecast = viewModel(
         factory = ForecastViewModelFactory(
-            (LocalContext.current.applicationContext as BaseAppConfig).forecastRepository
+            (context.applicationContext as BaseAppConfig).forecastRepository
         )
     )
 
@@ -67,9 +70,21 @@ fun HomeScreen(navController: NavHostController) {
     val dataForecast by viewModelForecast.getAllForecastWeather.observeAsState(initial = emptyList())
 
     var bgColor: Color by remember { mutableStateOf(sunnyBg) }
+    var bgDrawable: Int by remember { mutableStateOf(R.drawable.forest_sunny) }
     if (dataCurrent.toMutableList().isNotEmpty()) {
         val it = dataCurrent[0]
         bgColor = HelperUtil.getBgColor(it.weatherMain)
+        bgDrawable = HelperUtil.getBgDrawable(it.weatherMain)
+    }
+
+    when {
+        !HelperUtil.isConnectedToInternet(context) -> {
+            Toast.makeText(
+                context,
+                stringResource(R.string.you_re_currently_in_offline_mode),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     Column(
@@ -77,8 +92,9 @@ fun HomeScreen(navController: NavHostController) {
     ) {
         CurrentContentView(
             dataCurrent,
-            modifier = Modifier.weight(1f),
-            navController
+            bgDrawable,
+            navController,
+            modifier = Modifier.weight(1f)
         )
         CurrentTempContentView(
             dataCurrent,
@@ -96,16 +112,13 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun CurrentContentView(
     data: List<CurrentWeatherModel>,
-    modifier: Modifier,
-    navController: NavHostController
+    bgDrawable: Int,
+    navController: NavHostController,
+    modifier: Modifier
 ) {
     if (data.toMutableList().isNotEmpty()) {
         val it = data[0]
         Log.d("loadCurrentObj", "$it")
-        // Bg Drawable
-        val bgDrawable: Int by remember {
-            mutableStateOf(HelperUtil.getBgDrawable(it.weatherMain))
-        }
 
         Box(
             modifier = modifier
@@ -154,6 +167,7 @@ fun CurrentContentView(
 
 @Composable
 fun Toolbar(navController: NavHostController, modifier: Modifier) {
+    val context = LocalContext.current
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -163,18 +177,46 @@ fun Toolbar(navController: NavHostController, modifier: Modifier) {
                 painter = painterResource(id = R.drawable.baseline_add_location_alt_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier.padding(26.dp).clickable { /* Go to search places */
-                    navController.navigate(Screen.SearchPlacesScreen.route)
-                }
+                modifier = Modifier
+                    .padding(26.dp)
+                    .clickable { /* Go to search places */
+                        when {
+                            HelperUtil.isConnectedToInternet(context) -> {
+                                navController.navigate(Screen.SearchPlacesScreen.route)
+                            }
+
+                            else -> {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.to_you_this_feature_connect_to_internet),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
             )
 
             Image(
                 painter = painterResource(id = R.drawable.baseline_bookmarks_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier.padding(26.dp).clickable { /* Go to favourites */
-                    navController.navigate(Screen.SearchPlacesScreen.route)
-                }
+                modifier = Modifier
+                    .padding(26.dp)
+                    .clickable { /* Go to favourites */
+                        when {
+                            HelperUtil.isConnectedToInternet(context) -> {
+                                navController.navigate(Screen.FavouritePlacesScreen.route)
+                            }
+
+                            else -> {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.to_you_this_feature_connect_to_internet),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
             )
         }
     }

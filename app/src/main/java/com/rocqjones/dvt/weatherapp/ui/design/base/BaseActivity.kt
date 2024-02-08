@@ -135,7 +135,7 @@ abstract class BaseActivity : ComponentActivity() {
 
             apiViewModel.fetchCurrentWeather(params).observe(this) {
                 if (it != null) {
-                    Log.d(tag, "currentWeather: ${Gson().toJson(it)}")
+                    Log.d(tag, "currentWeatherApi: ${Gson().toJson(it)}")
                     viewModelCurrent.deleteAllCurrentDetails()
                     insertCurrentToRoom(it)
                 }
@@ -166,24 +166,6 @@ abstract class BaseActivity : ComponentActivity() {
         }
     }
 
-    fun loadCurrentFromRoom(): List<CurrentWeatherModel>? {
-        var m : List<CurrentWeatherModel> = listOf()
-        return try {
-            viewModelCurrent.getAllCurrentWeather.observe(this) { current ->
-                current.let {
-                    Log.d("loadCurrentFromRoom", "$it")
-                    if (it != null) {
-                        m = it
-                    }
-                }
-            }
-            m
-        } catch (e: Exception) {
-            Log.e(tag, "loadCurrentFromRoom", e)
-            listOf()
-        }
-    }
-
     fun getWeatherForecast(latitude: Double, longitude: Double) {
         try {
             val params: MutableMap<String, String> = HashMap()
@@ -193,7 +175,7 @@ abstract class BaseActivity : ComponentActivity() {
 
             apiViewModel.fetchForecastWeather(params).observe(this) {
                 if (it != null) {
-                    Log.d(tag, "forecastWeather: ${Gson().toJson(it)}")
+                    Log.d(tag, "forecastWeatherApi: ${Gson().toJson(it)}")
                     viewModelForecast.deleteAllForecastDetails()
                     insertForecastToRoom(it)
                 }

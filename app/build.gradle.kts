@@ -107,12 +107,16 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
 
-    // Location
+    // Compose navigation
+    implementation("androidx.navigation:navigation-compose:$navigationVersion")
+
+    // Location services
     implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.android.gms:play-services-maps:18.2.0")
 
     // Google Places SDK
     implementation("com.google.android.libraries.places:places:3.3.0")
 
-    // Compose navigation
-    implementation("androidx.navigation:navigation-compose:$navigationVersion")
+    // Maps Compose - Maps SDK for Android
+    implementation("com.google.maps.android:maps-compose:4.3.0")
 }
