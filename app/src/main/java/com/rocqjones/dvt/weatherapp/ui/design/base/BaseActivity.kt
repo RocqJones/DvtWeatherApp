@@ -135,7 +135,7 @@ abstract class BaseActivity : ComponentActivity() {
 
             apiViewModel.fetchCurrentWeather(params).observe(this) {
                 if (it != null) {
-                    Log.d(tag, "currentWeather: ${Gson().toJson(it)}")
+                    Log.d(tag, "currentWeatherApi: ${Gson().toJson(it)}")
                     viewModelCurrent.deleteAllCurrentDetails()
                     insertCurrentToRoom(it)
                 }
@@ -175,7 +175,7 @@ abstract class BaseActivity : ComponentActivity() {
 
             apiViewModel.fetchForecastWeather(params).observe(this) {
                 if (it != null) {
-                    Log.d(tag, "forecastWeather: ${Gson().toJson(it)}")
+                    Log.d(tag, "forecastWeatherApi: ${Gson().toJson(it)}")
                     viewModelForecast.deleteAllForecastDetails()
                     insertForecastToRoom(it)
                 }
