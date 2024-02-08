@@ -9,8 +9,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
 import com.rocqjones.dvt.weatherapp.ui.design.base.BaseActivity
 import com.rocqjones.dvt.weatherapp.ui.design.screens.HomeScreen
+import com.rocqjones.dvt.weatherapp.ui.design.screens.SearchPlacesScreen
 import com.rocqjones.dvt.weatherapp.ui.theme.DvtWeatherAppTheme
 
 class MainActivity : BaseActivity() {
@@ -25,16 +30,10 @@ class MainActivity : BaseActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
+                    MyAppMain()
                 }
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        getCurrentWeather()
-        getWeatherForecast()
     }
 
     override fun activityContext(): Activity {
@@ -42,10 +41,30 @@ class MainActivity : BaseActivity() {
     }
 }
 
-@Preview(showBackground = true)
+@Composable
+fun MyAppMain() {
+    val navController = rememberNavController()
+
+    NavHost(
+        navController, startDestination = Screen.HomeScreen.route
+    ) {
+        composable(Screen.HomeScreen.route) {
+            HomeScreen(navController)
+        }
+        composable(Screen.SearchPlacesScreen.route) {
+            SearchPlacesScreen(navController)
+        }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    widthDp = 250,
+    heightDp = 450
+)
 @Composable
 fun GreetingPreview() {
     DvtWeatherAppTheme {
-        HomeScreen()
+        MyAppMain()
     }
 }

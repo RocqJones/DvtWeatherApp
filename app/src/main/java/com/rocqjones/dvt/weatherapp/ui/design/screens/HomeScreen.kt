@@ -34,11 +34,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.rocqjones.dvt.weatherapp.R
 import com.rocqjones.dvt.weatherapp.configs.BaseAppConfig
 import com.rocqjones.dvt.weatherapp.logic.models.entities.CurrentWeatherModel
 import com.rocqjones.dvt.weatherapp.logic.models.entities.ForecastWeatherModel
+import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
 import com.rocqjones.dvt.weatherapp.logic.utils.DataFormatUtil
+import com.rocqjones.dvt.weatherapp.logic.utils.HelperUtil
 import com.rocqjones.dvt.weatherapp.logic.vm.CurrentViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ForecastViewModelFactory
 import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelCurrent
@@ -46,7 +49,7 @@ import com.rocqjones.dvt.weatherapp.logic.vm.ViewModelForecast
 import com.rocqjones.dvt.weatherapp.ui.theme.sunnyBg
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavHostController) {
     val viewModelCurrent: ViewModelCurrent = viewModel(
         factory = CurrentViewModelFactory(
             (LocalContext.current.applicationContext as BaseAppConfig).currentRepository
@@ -66,7 +69,7 @@ fun HomeScreen() {
     var bgColor: Color by remember { mutableStateOf(sunnyBg) }
     if (dataCurrent.toMutableList().isNotEmpty()) {
         val it = dataCurrent[0]
-        bgColor = DataFormatUtil.getBgColor(it.weatherMain)
+        bgColor = HelperUtil.getBgColor(it.weatherMain)
     }
 
     Column(
@@ -74,7 +77,8 @@ fun HomeScreen() {
     ) {
         CurrentContentView(
             dataCurrent,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            navController
         )
         CurrentTempContentView(
             dataCurrent,
@@ -92,26 +96,32 @@ fun HomeScreen() {
 @Composable
 fun CurrentContentView(
     data: List<CurrentWeatherModel>,
-    modifier: Modifier
+    modifier: Modifier,
+    navController: NavHostController
 ) {
     if (data.toMutableList().isNotEmpty()) {
         val it = data[0]
         Log.d("loadCurrentObj", "$it")
         // Bg Drawable
         val bgDrawable: Int by remember {
-            mutableStateOf(DataFormatUtil.getBgDrawable(it.weatherMain))
+            mutableStateOf(HelperUtil.getBgDrawable(it.weatherMain))
         }
 
         Box(
-            modifier = modifier.fillMaxSize().paint(
-                painterResource(id = bgDrawable),
-                contentScale = ContentScale.FillBounds
-            ),
+            modifier = modifier
+                .fillMaxSize()
+                .paint(
+                    painterResource(id = bgDrawable),
+                    contentScale = ContentScale.FillBounds
+                ),
             contentAlignment = Alignment.Center
         ) {
             // Toolbar at the top, fill width
             Toolbar(
-                modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter)
+                navController,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
             )
 
             Column(
@@ -143,7 +153,7 @@ fun CurrentContentView(
 }
 
 @Composable
-fun Toolbar(modifier: Modifier) {
+fun Toolbar(navController: NavHostController, modifier: Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -153,23 +163,22 @@ fun Toolbar(modifier: Modifier) {
                 painter = painterResource(id = R.drawable.baseline_add_location_alt_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier
-                    .padding(26.dp)
-                    .clickable { /* Call screen 1 */ }
+                modifier = Modifier.padding(26.dp).clickable { /* Go to search places */
+                    navController.navigate(Screen.SearchPlacesScreen.route)
+                }
             )
 
             Image(
                 painter = painterResource(id = R.drawable.baseline_bookmarks_24),
                 contentDescription = stringResource(R.string.icon),
                 contentScale = ContentScale.None,
-                modifier = Modifier
-                    .padding(26.dp)
-                    .clickable { /* Call screen 2 */ }
+                modifier = Modifier.padding(26.dp).clickable { /* Go to favourites */
+                    navController.navigate(Screen.SearchPlacesScreen.route)
+                }
             )
         }
     }
 }
-
 
 @Composable
 fun CurrentTempContentView(
@@ -271,7 +280,7 @@ fun ForecastContentView(
             items(dataForecastList) { item ->
                 // setIcon
                 val bgIcon: Int by remember {
-                    mutableStateOf(DataFormatUtil.getBgIcon(item.weatherMain))
+                    mutableStateOf(HelperUtil.getBgIcon(item.weatherMain))
                 }
 
                 ListRowView(

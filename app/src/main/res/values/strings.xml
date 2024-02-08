@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Weather Forecast</string>
     <string name="icon">Icon</string>
+    <string name="api_key">AIzaSyDTwfJGnRMZwt-nF2kR111Is8Pf2huCaw4</string>
 </resources>

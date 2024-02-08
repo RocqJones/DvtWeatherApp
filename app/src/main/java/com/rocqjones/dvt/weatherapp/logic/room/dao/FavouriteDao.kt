@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.rocqjones.dvt.weatherapp.logic.models.entities.FavouriteWeatherModel
 import kotlinx.coroutines.flow.Flow
 
@@ -14,6 +15,9 @@ interface FavouriteDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(favouriteWeatherModel: FavouriteWeatherModel)
+
+    @Update
+    suspend fun update(favouriteWeatherModel: FavouriteWeatherModel)
 
     @Query("DELETE FROM t_favourite WHERE id = :id")
     suspend fun deleteFavouriteItem(id: Int)
