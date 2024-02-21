@@ -18,9 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.navigation.NavHostController
-import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
@@ -29,9 +27,13 @@ import com.rocqjones.dvt.weatherapp.R
 import com.rocqjones.dvt.weatherapp.logic.models.DataFactory
 import com.rocqjones.dvt.weatherapp.logic.models.PlacesModel
 import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
+import com.rocqjones.dvt.weatherapp.logic.providers.PlacesProvider
 
 @Composable
-fun SearchPlacesScreen(navController: NavHostController) {
+fun SearchPlacesScreen(
+    navController: NavHostController,
+    placesProvider: PlacesProvider
+) {
     val tag = "PlacesScreen|MAP"
     val context = LocalContext.current
 
@@ -39,15 +41,15 @@ fun SearchPlacesScreen(navController: NavHostController) {
     val isInitialized = remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
-        if (!Places.isInitialized()) {
-            Places.initialize(context, context.getString(R.string.api_key))
+        if (!placesProvider.isInitialized()) {
+            placesProvider.initialize(context, context.getString(R.string.api_key))
         }
 
-        isInitialized.value = true
+        isInitialized.value = placesProvider.isInitialized()
 
         onDispose {
             // Shutdown Places SDK resources
-            Places.deinitialize()
+            placesProvider.deInitialize()
         }
     }
 

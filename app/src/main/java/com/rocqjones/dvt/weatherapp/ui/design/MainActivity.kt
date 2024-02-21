@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.rocqjones.dvt.weatherapp.logic.helpers.DefaultPlacesProvider
 import com.rocqjones.dvt.weatherapp.logic.models.sealed.Screen
 import com.rocqjones.dvt.weatherapp.ui.design.base.BaseActivity
 import com.rocqjones.dvt.weatherapp.ui.design.screens.FavouritePlacesScreen
@@ -20,6 +21,8 @@ import com.rocqjones.dvt.weatherapp.ui.design.screens.SearchPlacesScreen
 import com.rocqjones.dvt.weatherapp.ui.theme.DvtWeatherAppTheme
 
 class MainActivity : BaseActivity() {
+
+    private val placesProvider = DefaultPlacesProvider()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +34,7 @@ class MainActivity : BaseActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MyAppMain()
+                    MyAppMain(placesProvider)
                 }
             }
         }
@@ -43,7 +46,7 @@ class MainActivity : BaseActivity() {
 }
 
 @Composable
-fun MyAppMain() {
+fun MyAppMain(placesProvider: DefaultPlacesProvider) {
     val navController = rememberNavController()
 
     NavHost(
@@ -53,7 +56,7 @@ fun MyAppMain() {
             HomeScreen(navController)
         }
         composable(Screen.SearchPlacesScreen.route) {
-            SearchPlacesScreen(navController)
+            SearchPlacesScreen(navController, placesProvider)
         }
         composable(Screen.FavouritePlacesScreen.route) {
             FavouritePlacesScreen(navController)
@@ -69,6 +72,6 @@ fun MyAppMain() {
 @Composable
 fun GreetingPreview() {
     DvtWeatherAppTheme {
-        MyAppMain()
+        MyAppMain(DefaultPlacesProvider())
     }
 }
