@@ -64,6 +64,8 @@ dependencies {
     val lifecycleVersion = "2.7.0"
     val roomVersion = "2.5.0"
     val navigationVersion = "2.7.7"
+    val mockitoKt = "3.2.0"
+    val mockitoAndroid = "5.10.0"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.activity:activity-compose:1.8.2")
@@ -119,4 +121,8 @@ dependencies {
 
     // Maps Compose - Maps SDK for Android
     implementation("com.google.maps.android:maps-compose:4.3.0")
+
+    // testing with mockito
+    implementation("org.mockito:mockito-android:$mockitoAndroid")
+    androidTestImplementation("org.mockito.kotlin:mockito-kotlin:$mockitoKt")
 }
