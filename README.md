@@ -81,8 +81,8 @@ fun fetchCurrentWeather(
 - [Google Maps SDK](https://developers.google.com/maps/documentation/android-sdk/start) - In our use case we are displaying all favorite places on a map for quick visibility through Google location markers with some hint information when a marker is clicked.<br>
 
 ## Testing.
-**Unit Tests:** Leveraged use of `espresso` and `junit` to write tests for my models and API tests.
-**Android InstrumentedTest:** Used `mockito` which provides us with a way to verify interactions within our app.
+- **Unit Tests:** Leveraged use of `espresso` and `junit` to write tests for my models and API tests.
+- **Android InstrumentedTest:** Used `mockito` which provides us with a way to verify interactions within our app.
 
 ## Android CI (Continuous Integration)
 Used `Android CI` from the GitHub marketplace for CI/CD
