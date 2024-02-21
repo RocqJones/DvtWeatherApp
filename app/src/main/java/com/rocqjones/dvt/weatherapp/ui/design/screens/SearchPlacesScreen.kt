@@ -53,7 +53,6 @@ fun SearchPlacesScreen(
         }
     }
 
-    // Display after initialization is complete
     if (isInitialized.value) {
         PlacesContent(tag, context, navController)
     }
@@ -81,8 +80,6 @@ fun PlacesContent(tag: String, context: Context, navController: NavHostControlle
                         )
 
                         Toast.makeText(context, "${place.name} added successfully", Toast.LENGTH_SHORT).show()
-
-                        // Move to the next screen
                         navController.navigate(Screen.FavouritePlacesScreen.route)
                     }
                 }
@@ -96,7 +93,6 @@ fun PlacesContent(tag: String, context: Context, navController: NavHostControlle
                 }
 
                 Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
                     DataFactory.setPlaceModel(null)
                 }
             }
@@ -115,12 +111,6 @@ fun PlacesContent(tag: String, context: Context, navController: NavHostControlle
             AutocompleteActivityMode.OVERLAY, fields
         ).build(context)
         intentLauncher.launch(intent)
-    }
-
-    try {
-
-    } catch (e: Exception) {
-        Log.e(tag, "launchMapInputOverlay Error", e)
     }
 
     Column(
